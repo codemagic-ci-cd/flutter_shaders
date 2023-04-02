@@ -1,8 +1,8 @@
 import 'dart:ui';
-
+import 'package:vector_math/vector_math_64.dart' as vec;
 import 'package:flutter/material.dart';
 
-const shaderfilename = "animated_gradient.frag";
+const shaderfilename = "seascape.frag";
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 1),
+    duration: const Duration(seconds: 10),
     vsync: this,
   )..repeat();
 
@@ -43,10 +43,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   }
 
   int _startTime = 0;
-  double get _elapsedTimeInSeconds => (_startTime - DateTime.now().millisecondsSinceEpoch) / 1000;
+  double get _elapsedTimeInSeconds => (DateTime.now().millisecondsSinceEpoch - _startTime) / 1000;
+
+  double seaHeight = 0.5;
 
   @override
   Widget build(BuildContext context) {
+    _startTime = DateTime.now().millisecondsSinceEpoch;
     return Scaffold(
       body: Center(
         child: Column(
@@ -60,13 +63,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final shader = snapshot.data!;
-                      _startTime = DateTime.now().millisecondsSinceEpoch;
-                      shader.setFloat(1, MediaQuery.of(context).size.width); //width
-                      shader.setFloat(2, MediaQuery.of(context).size.height); //height
+                      shader
+                        ..setFloat(1, MediaQuery.of(context).size.width) //width
+                        ..setFloat(2, MediaQuery.of(context).size.height); //height
+
                       return AnimatedBuilder(
                           animation: _controller,
                           builder: (context, _) {
-                            shader.setFloat(0, _elapsedTimeInSeconds);                            
+                            shader.setFloat(0, _elapsedTimeInSeconds);
                             return CustomPaint(
                               painter: ShaderPainter(shader),
                             );
@@ -90,6 +94,8 @@ class ShaderPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    canvas.translate(size.width, size.height);
+    canvas.rotate(180 * vec.degrees2Radians);
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width, size.height),
       Paint()..shader = shader,
