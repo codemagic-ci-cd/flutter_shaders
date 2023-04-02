@@ -28,7 +28,21 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 1),
+    vsync: this,
+  )..repeat();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  int _startTime = 0;
+  double get _elapsedTimeInSeconds => (_startTime - DateTime.now().millisecondsSinceEpoch) / 1000;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,9 +58,15 @@ class _MyHomePageState extends State<MyHomePage> {
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
                       final shader = snapshot.data!;
-                      return CustomPaint(
-                        painter: ShaderPainter(shader),
-                      );
+                      _startTime = DateTime.now().millisecondsSinceEpoch;
+                      return AnimatedBuilder(
+                          animation: _controller,
+                          builder: (context, _) {
+                            shader.setFloat(0, _elapsedTimeInSeconds);
+                            return CustomPaint(
+                              painter: ShaderPainter(shader),
+                            );
+                          });
                     } else {
                       return const CircularProgressIndicator();
                     }
@@ -79,6 +99,8 @@ class ShaderPainter extends CustomPainter {
 }
 
 Future<FragmentShader> _load() async {
-  FragmentProgram program = await FragmentProgram.fromAsset('shaders/hellow.frag');
-  return program.fragmentShader();
+  FragmentProgram program = await FragmentProgram.fromAsset('shaders/animated_colour.frag');
+  final shader = program.fragmentShader();
+
+  return shader;
 }
