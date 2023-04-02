@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+const shaderfilename = "animated_gradient.frag";
+
 void main() {
   runApp(const MyApp());
 }
@@ -59,10 +61,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     if (snapshot.hasData) {
                       final shader = snapshot.data!;
                       _startTime = DateTime.now().millisecondsSinceEpoch;
+                      shader.setFloat(1, MediaQuery.of(context).size.width); //width
+                      shader.setFloat(2, MediaQuery.of(context).size.height); //height
                       return AnimatedBuilder(
                           animation: _controller,
                           builder: (context, _) {
-                            shader.setFloat(0, _elapsedTimeInSeconds);
+                            shader.setFloat(0, _elapsedTimeInSeconds);                            
                             return CustomPaint(
                               painter: ShaderPainter(shader),
                             );
@@ -99,7 +103,7 @@ class ShaderPainter extends CustomPainter {
 }
 
 Future<FragmentShader> _load() async {
-  FragmentProgram program = await FragmentProgram.fromAsset('shaders/animated_colour.frag');
+  FragmentProgram program = await FragmentProgram.fromAsset('shaders/$shaderfilename');
   final shader = program.fragmentShader();
 
   return shader;

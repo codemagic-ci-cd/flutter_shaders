@@ -25,3 +25,4 @@ flutter:
   shaders:
     - shaders/hellow.frag
     - shaders/animated_colour.frag
+    - shaders/animated_gradient.frag
