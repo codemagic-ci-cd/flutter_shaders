@@ -2,9 +2,9 @@
 
 // ref: https://www.shadertoy.com/view/Ms2SD1
 
-uniform float u_time;       // Time in seconds since load
-uniform vec2 u_resolution;  // Canvas size (width,height)
-uniform vec2 u_mouse;       // mouse position in screen pixels
+uniform float iTime;       // Time in seconds since load
+uniform vec2 iResolution;  // Canvas size (width,height)
+uniform vec2 iMouse;       // mouse position in screen pixels
 
 out vec4 fragColor; // output colour for Flutter, like gl_FragColor
 
@@ -18,7 +18,7 @@ out vec4 fragColor; // output colour for Flutter, like gl_FragColor
 const int NUM_STEPS = 8;
 const float PI	 	= 3.141592;
 const float EPSILON	= 1e-3;
-#define EPSILON_NRM (0.1 / u_resolution.x)
+#define EPSILON_NRM (0.1 / iResolution.x)
 #define AA
 
 // sea
@@ -30,7 +30,7 @@ const float SEA_SPEED = 0.8;
 const float SEA_FREQ = 0.16;
 const vec3 SEA_BASE = vec3(0.0,0.09,0.18);
 const vec3 SEA_WATER_COLOR = vec3(0.8,0.9,0.6)*0.6;
-#define SEA_TIME (1.0 + u_time * SEA_SPEED)
+#define SEA_TIME (1.0 + iTime * SEA_SPEED)
 const mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
 
 // math
@@ -169,9 +169,9 @@ float heightMapTracing(vec3 ori, vec3 dir, out vec3 p) {
 }
 
 vec3 getPixel(in vec2 coord, float time) {    
-    vec2 uv = coord / u_resolution.xy;
+    vec2 uv = coord / iResolution.xy;
     uv = uv * 2.0 - 1.0;
-    uv.x *= u_resolution.x / u_resolution.y;    
+    uv.x *= iResolution.x / iResolution.y;    
         
         
     // ray
@@ -196,7 +196,7 @@ vec3 getPixel(in vec2 coord, float time) {
 
 // main
 void main() {
-    float time = u_time * 0.3;
+    float time = iTime * 0.3;
 	
     vec3 color = getPixel(gl_FragCoord.xy, time);
     
