@@ -1,9 +1,5 @@
 // ref: https://thebookofshaders.com/02/
 
-#ifdef GL_ES
-precision mediump float;
-#endif
-
 out vec4 fragColor;
 
 void main() {

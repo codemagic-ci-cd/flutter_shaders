@@ -2,10 +2,6 @@
 
 // ref: https://www.shadertoy.com/view/Ms2SD1
 
-#ifdef GL_ES
-precision mediump float;
-#endif
-
 uniform float u_time;       // Time in seconds since load
 uniform vec2 u_resolution;  // Canvas size (width,height)
 uniform vec2 u_mouse;       // mouse position in screen pixels

@@ -2,10 +2,6 @@
 // learn about uniforms
 // ref: https://thebookofshaders.com/03/
 
-#ifdef GL_ES
-precision mediump float;
-#endif
-
 uniform float u_time; // Time in seconds since load
 
 out vec4 fragColor; // output colour for Flutter, like gl_FragColor
