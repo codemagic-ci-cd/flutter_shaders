@@ -49,36 +49,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: FutureBuilder<FragmentShader>(
-                  future: _load(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      final shader = snapshot.data!;
-                      _startTime = DateTime.now().millisecondsSinceEpoch;
-                      shader.setFloat(1, MediaQuery.of(context).size.width); //width
-                      shader.setFloat(2, MediaQuery.of(context).size.height); //height
-                      return AnimatedBuilder(
-                          animation: _controller,
-                          builder: (context, _) {
-                            shader.setFloat(0, _elapsedTimeInSeconds);
-                            return CustomPaint(
-                              painter: ShaderPainter(shader),
-                            );
-                          });
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  }),
-            )
-          ],
-        ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width,
+            child: FutureBuilder<FragmentShader>(
+                future: _load(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final shader = snapshot.data!;
+                    _startTime = DateTime.now().millisecondsSinceEpoch;
+                    shader.setFloat(1, MediaQuery.of(context).size.width); //width
+                    shader.setFloat(2, MediaQuery.of(context).size.height); //height
+                    return AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, _) {
+                          shader.setFloat(0, _elapsedTimeInSeconds);
+                          return CustomPaint(
+                            painter: ShaderPainter(shader),
+                          );
+                        });
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                }),
+          ),
+        ],
       ),
     );
   }
